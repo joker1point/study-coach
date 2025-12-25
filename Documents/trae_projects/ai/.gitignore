@@ -1,0 +1,68 @@
+# Python虚拟环境
+openagents_env/
+env/
+venv/
+.env/
+
+# IDE文件
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 日志文件
+*.log
+logs/
+
+# 数据文件
+data/
+*.db
+*.sqlite
+
+# 配置文件
+*.ini
+*.cfg
+*.yaml
+*.yml
+!my_first_network/network.yaml
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+.trae-aicc/
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# OpenAgents相关
+.openagents/
+openagents.log
+
+# Ollama相关
+.ollama/
+
+# Conda/Anaconda
+.anaconda/
+.conda/
+.condarc
+
+# Node.js
+node_modules/
+package-lock.json
+
+# 编译文件
+*.pyc
+__pycache__/
+
+# 其他
+AppData/
+Contacts/
+Desktop/
+Downloads/
+Favorites/
+Music/
+Pictures/
+Videos/

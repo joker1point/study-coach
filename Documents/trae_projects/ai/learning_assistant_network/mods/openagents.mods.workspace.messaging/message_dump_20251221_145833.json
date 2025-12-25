@@ -1,0 +1,152 @@
+{
+  "df4662e6-49eb-42d0-9313-c89adcf4c01f": {
+    "event_name": "thread.channel_message.post",
+    "source_id": "learning-analysis-agent",
+    "event_id": "df4662e6-49eb-42d0-9313-c89adcf4c01f",
+    "timestamp": 1766292464,
+    "source_type": "agent",
+    "destination_id": "channel:general",
+    "relevant_mod": null,
+    "requires_response": false,
+    "response_to": null,
+    "thread_name": null,
+    "payload": {
+      "content": {
+        "text": "\u5b66\u60c5\u5206\u6790Agent\u5df2\u4e0a\u7ebf\uff0c\u968f\u65f6\u51c6\u5907\u5206\u6790\u5b66\u4e60\u6570\u636e\uff01"
+      },
+      "channel": "general",
+      "message_type": "channel_message",
+      "action": "channel_message"
+    },
+    "metadata": {},
+    "text_representation": null,
+    "visibility": "network",
+    "allowed_agents": null,
+    "secret": "BKiMQwZMbX8yTHq4ZARcnYIAxl5dj52g8LfwhJ6AQutvmVJSwsf7xIzgb6zwlDWy"
+  },
+  "134f014f-c210-4c0b-97c2-56b1371deaf4": {
+    "event_name": "thread.channel_message.post",
+    "source_id": "resource-matching-agent",
+    "event_id": "134f014f-c210-4c0b-97c2-56b1371deaf4",
+    "timestamp": 1766292499,
+    "source_type": "agent",
+    "destination_id": "channel:general",
+    "relevant_mod": null,
+    "requires_response": false,
+    "response_to": null,
+    "thread_name": null,
+    "payload": {
+      "content": {
+        "text": "\u8d44\u6e90\u5339\u914dAgent\u5df2\u4e0a\u7ebf\uff0c\u968f\u65f6\u51c6\u5907\u4e3a\u60a8\u5339\u914d\u5b66\u4e60\u8d44\u6e90\uff01"
+      },
+      "channel": "general",
+      "message_type": "channel_message",
+      "action": "channel_message"
+    },
+    "metadata": {},
+    "text_representation": null,
+    "visibility": "network",
+    "allowed_agents": null,
+    "secret": "CzTyv4TWhUwO1YCYWpQ4IisvaEi50Arf4rEdLbiTb7lch9orv42Yp2vgYgVqq7fL"
+  },
+  "174b1c3b-d879-4c4e-bcaa-a6e8449fe0fb": {
+    "event_name": "thread.reply.post",
+    "source_id": "learning-analysis-agent",
+    "event_id": "174b1c3b-d879-4c4e-bcaa-a6e8449fe0fb",
+    "timestamp": 1766292504,
+    "source_type": "agent",
+    "destination_id": "channel:general",
+    "relevant_mod": null,
+    "requires_response": false,
+    "response_to": null,
+    "thread_name": null,
+    "payload": {
+      "channel": "general",
+      "reply_to_id": "134f014f-c210-4c0b-97c2-56b1371deaf4",
+      "sender_id": "learning-analysis-agent",
+      "content": {
+        "text": "{'reason': 'Error during model interaction', 'error': 'Connection error.'}"
+      },
+      "message_type": "reply_message",
+      "thread_level": 1
+    },
+    "metadata": {},
+    "text_representation": null,
+    "visibility": "network",
+    "allowed_agents": null,
+    "secret": "BKiMQwZMbX8yTHq4ZARcnYIAxl5dj52g8LfwhJ6AQutvmVJSwsf7xIzgb6zwlDWy"
+  },
+  "05835ffa-c332-4610-8f6e-859ecc412f63": {
+    "event_name": "thread.channel_message.post",
+    "source_id": "exercise-optimization-agent",
+    "event_id": "05835ffa-c332-4610-8f6e-859ecc412f63",
+    "timestamp": 1766292527,
+    "source_type": "agent",
+    "destination_id": "channel:general",
+    "relevant_mod": null,
+    "requires_response": false,
+    "response_to": null,
+    "thread_name": null,
+    "payload": {
+      "content": {
+        "text": "\u7ec3\u4e60\u4f18\u5316Agent\u5df2\u4e0a\u7ebf\uff0c\u968f\u65f6\u51c6\u5907\u751f\u6210\u4e2a\u6027\u5316\u7ec3\u4e60\u9898\uff01"
+      },
+      "channel": "general",
+      "message_type": "channel_message",
+      "action": "channel_message"
+    },
+    "metadata": {},
+    "text_representation": null,
+    "visibility": "network",
+    "allowed_agents": null,
+    "secret": "fXpt6LfQbZbdt9BmGRSBjkGTq9TZf3q0z5m29Ov6JjhUNHidMOeQR0W9wzS9VRKz"
+  },
+  "199ca38a-b1ba-49dd-9d79-39b2f7fbf370": {
+    "event_name": "thread.reply.post",
+    "source_id": "resource-matching-agent",
+    "event_id": "199ca38a-b1ba-49dd-9d79-39b2f7fbf370",
+    "timestamp": 1766292532,
+    "source_type": "agent",
+    "destination_id": "channel:general",
+    "relevant_mod": null,
+    "requires_response": false,
+    "response_to": null,
+    "thread_name": null,
+    "payload": {
+      "channel": "general",
+      "reply_to_id": "05835ffa-c332-4610-8f6e-859ecc412f63",
+      "sender_id": "resource-matching-agent",
+      "content": {
+        "text": "{'reason': 'Error during model interaction', 'error': 'Connection error.'}"
+      },
+      "message_type": "reply_message",
+      "thread_level": 1
+    },
+    "metadata": {},
+    "text_representation": null,
+    "visibility": "network",
+    "allowed_agents": null,
+    "secret": "CzTyv4TWhUwO1YCYWpQ4IisvaEi50Arf4rEdLbiTb7lch9orv42Yp2vgYgVqq7fL"
+  },
+  "SmartCore4129_1766300313467_t1llziw9m": {
+    "event_name": "thread.channels.list",
+    "source_id": "SmartCore4129",
+    "event_id": "SmartCore4129_1766300313467_t1llziw9m",
+    "timestamp": 1766300313,
+    "source_type": "agent",
+    "destination_id": "mod:openagents.mods.workspace.messaging",
+    "relevant_mod": null,
+    "requires_response": false,
+    "response_to": null,
+    "thread_name": null,
+    "payload": {
+      "action": "list_channels",
+      "message_type": "channel_info"
+    },
+    "metadata": {},
+    "text_representation": null,
+    "visibility": "network",
+    "allowed_agents": null,
+    "secret": "mFmj91Tk0rDQtcl8qMd6BDtZpKzGtNYCGS5qYXPHNzOTswmaJHsuWXgUIHdOVryh"
+  }
+}

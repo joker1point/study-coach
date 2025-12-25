@@ -1,0 +1,57 @@
+network:
+  name: "Learning Assistant Network"
+  mode: "centralized"
+  node_id: "learning-assistant-network-1"
+
+  transports:
+    - type: "http"
+      config:
+        host: "0.0.0.0"
+        port: 8700
+        cors_enabled: true
+    - type: "grpc"
+      config:
+        host: "0.0.0.0"
+        port: 8600
+
+  mods:
+    # Thread messaging for discussions
+    - name: "openagents.mods.workspace.messaging"
+      enabled: true
+      config:
+        default_channels:
+          - name: "general"
+            description: "General discussions and announcements"
+          - name: "learning"
+            description: "Learning-related discussions"
+          - name: "questions"
+            description: "Questions and answers"
+          - name: "resources"
+            description: "Learning resources sharing"
+          - name: "learning-resources"
+            description: "Automatically matched learning resources"
+          - name: "exercises"
+            description: "Generated exercises and practice"
+        max_thread_depth: 10
+        enable_message_routing: true
+
+    # Shared cache for agent collaboration
+    - name: "openagents.mods.core.shared_cache"
+      enabled: true
+      config:
+        cache_ttl: 3600
+        max_cache_size: 10000000
+
+
+
+network_profile:
+  discoverable: true
+  name: "LearningAssistantNetwork"
+  description: "A collaborative network for learning assistants to help with educational needs"
+  tags: ["education", "learning", "assistant", "discussion"]
+  authentication:
+    type: "none"
+  host: "0.0.0.0"
+  port: 8700
+
+log_level: "INFO"
