@@ -95,6 +95,38 @@ class ResourceMatchingAgent(WorkerAgent):
             import traceback
             traceback.print_exc()
     
+    async def _handle_collaboration_request(self, request_data: dict) -> list:
+        """
+        处理来自其他代理的协作请求
+        
+        Args:
+            request_data: 协作请求数据
+            
+        Returns:
+            list: 匹配的学习资源列表
+        """
+        try:
+            student_id = request_data.get("student_id", "collaboration")
+            subject = request_data.get("subject", "")
+            knowledge_points = request_data.get("knowledge_points", [])
+            learning_level = request_data.get("learning_level", "")
+            
+            # 使用工具管理器匹配学习资源
+            matched_resources_result = tool_manager.call_tool(
+                "match_learning_resources",
+                student_id=student_id,
+                subject=subject,
+                knowledge_points=knowledge_points,
+                learning_level=learning_level
+            )
+            
+            return matched_resources_result["resources"]
+        except Exception as e:
+            print(f"❌ 处理协作请求时出错: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return []
+    
     async def on_startup(self):
         """Agent启动时执行"""
         ws = self.workspace()
@@ -107,8 +139,20 @@ class ResourceMatchingAgent(WorkerAgent):
             message = context.incoming_event.content
             if isinstance(message, dict):
                 message_text = message.get("text", str(message))
+                
+                # 检查是否为协作请求
+                if message.get("request_type") == "collaboration":
+                    print(f"🤝 收到协作请求: {message}")
+                    # 处理协作请求
+                    matched_resources = await self._handle_collaboration_request(message)
+                    # 发送响应
+                    ws = self.workspace()
+                    await ws.agent(context.source_id).send({
+                        "message": "协作资源匹配完成",
+                        "matched_resources": matched_resources
+                    })
                 # 检查是否包含资源请求
-                if "resource_request" in message:
+                elif "resource_request" in message:
                     request_data = message["resource_request"]
                     # 匹配资源
                     matched_resources = match_learning_resources(request_data)
@@ -264,15 +308,21 @@ class ResourceMatchingAgent(WorkerAgent):
                 })()
             else:
                 # 普通指令，调用LLM生成响应
-                # 格式化指令
+                # 格式化指令 - 专注于资源匹配的专业领域，避免与其他代理重复
                 formatted_instruction = f"""
-                你是一个专业的资源匹配助手，能够根据学情报告为学生匹配最合适的学习资源。
+                你是一个专业的资源匹配助手，专门为学生匹配最合适的学习资源。
+                
+                你的职责：
+                1. 当用户询问学习方法、知识点等问题时，重点推荐相关的学习资源
+                2. 根据用户的学习阶段和需求，推荐不同类型的资源（教材、课件、微课、案例等）
+                3. 提供资源的简要介绍和适用场景
+                4. 不要重复其他代理关于解题方法、练习技巧的回答
+                5. 不要生成练习题
                 
                 注意事项：
-                1. 只回答用户的具体问题，不要添加额外的解释或背景信息
-                2. 回答要简洁明了，不要包含与问题无关的技术细节
-                3. 如果用户的问题不明确，请礼貌地询问更多信息
-                4. 如果无法回答问题，请直接说明
+                - 回答要聚焦资源推荐，保持专业和实用
+                - 语言简洁明了，避免过于技术化的术语
+                - 如果用户问题不明确，请询问具体学习需求
                 
                 用户的问题：{instruction}
                 你的回答：

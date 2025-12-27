@@ -385,6 +385,164 @@ class ExerciseOptimizationAgent(WorkerAgent):
                     return question
         return None
     
+    def _is_exercise_request(self, message_text: str) -> bool:
+        """
+        判断消息是否为练习生成请求
+        
+        Args:
+            message_text: 消息文本
+        
+        Returns:
+            bool: 是否为练习生成请求
+        """
+        keywords = ['练习题', '练习', '习题', 'generate exercise']
+        return any(keyword in message_text.lower() for keyword in keywords)
+    
+    def _parse_exercise_request(self, message_text: str) -> dict:
+        """
+        解析练习生成请求
+        
+        Args:
+            message_text: 消息文本
+        
+        Returns:
+            dict: 解析后的练习请求
+        """
+        import re
+        
+        # 默认值
+        exercise_request = {
+            "subject": "数学",
+            "difficulty": "中等",
+            "count": 3,
+            "knowledge_points": []
+        }
+        
+        # 解析学科
+        subject_patterns = {
+            "数学": [r"数学", r"高数", r"代数", r"几何"],
+            "物理": [r"物理"],
+            "英语": [r"英语"]
+        }
+        
+        for subject, patterns in subject_patterns.items():
+            for pattern in patterns:
+                if re.search(pattern, message_text):
+                    exercise_request["subject"] = subject
+                    break
+        
+        # 解析难度
+        difficulty_patterns = {
+            "简单": [r"简单", r"入门"],
+            "中等": [r"中等", r"一般"],
+            "困难": [r"困难", r"高级"]
+        }
+        
+        for difficulty, patterns in difficulty_patterns.items():
+            for pattern in patterns:
+                if re.search(pattern, message_text):
+                    exercise_request["difficulty"] = difficulty
+                    break
+        
+        # 解析数量
+        count_match = re.search(r"(\d+)道", message_text)
+        if count_match:
+            exercise_request["count"] = int(count_match.group(1))
+        
+        # 解析知识点
+        knowledge_patterns = {
+            "math_algebra_eq_linear": [r"线性方程", r"方程"],
+            "math_algebra_eq_quadratic": [r"二次方程"],
+            "math_geometry_triangle_area": [r"三角形面积"],
+            "math_geometry_circle": [r"圆"]
+        }
+        
+        for kp, patterns in knowledge_patterns.items():
+            for pattern in patterns:
+                if re.search(pattern, message_text):
+                    exercise_request["knowledge_points"].append(kp)
+                    break
+        
+        # 如果没有指定知识点，根据学科选择默认知识点
+        if not exercise_request["knowledge_points"]:
+            if exercise_request["subject"] == "数学":
+                exercise_request["knowledge_points"] = ["math_algebra_eq_linear", "math_geometry_triangle_area"]
+        
+        return exercise_request
+    
+    async def generate_exercises_from_request(self, exercise_request: dict) -> list:
+        """
+        根据用户请求生成练习题
+        
+        Args:
+            exercise_request: 练习请求
+        
+        Returns:
+            list: 生成的练习题
+        """
+        subject = exercise_request["subject"]
+        difficulty = exercise_request["difficulty"]
+        count = exercise_request["count"]
+        knowledge_points = exercise_request["knowledge_points"]
+        
+        # 如果没有指定知识点，获取该学科的所有知识点
+        if not knowledge_points:
+            knowledge_points = self._get_subject_knowledge_points(subject)
+        
+        # 生成练习题
+        exercises = self._generate_exercises_for_kps(knowledge_points, [difficulty], count)
+        
+        # 如果生成的题目不足，补充其他难度的题目
+        if len(exercises) < count:
+            other_difficulties = [d for d in ["简单", "中等", "困难"] if d != difficulty]
+            additional_exercises = self._generate_exercises_for_kps(knowledge_points, other_difficulties, count - len(exercises))
+            exercises.extend(additional_exercises)
+        
+        return exercises[:count]
+    
+    def _build_integrated_response(self, exercises: list, resource_response: dict, exercise_request: dict) -> str:
+        """
+        构建整合响应
+        
+        Args:
+            exercises: 生成的练习题
+            resource_response: 资源匹配代理的响应
+            exercise_request: 练习请求
+        
+        Returns:
+            str: 整合后的响应文本
+        """
+        response_parts = []
+        
+        # 添加练习题部分
+        response_parts.append(f"\n### 📝 {exercise_request['subject']}练习题（难度：{exercise_request['difficulty']}）")
+        
+        if exercises:
+            for i, exercise in enumerate(exercises, 1):
+                options_text = "\n选项：" + "\n".join(exercise["options"])
+                response_parts.append(f"\n{i}. {exercise['content']}{options_text}")
+                response_parts.append(f"   答案：{exercise['correct_answer']}")
+        else:
+            response_parts.append("\n暂无合适的练习题，请稍后再试。")
+        
+        # 添加资源推荐部分
+        if resource_response and "matched_resources" in resource_response:
+            matched_resources = resource_response["matched_resources"]
+            if matched_resources:
+                response_parts.append(f"\n### 📚 相关学习资源")
+                for i, resource in enumerate(matched_resources[:3], 1):
+                    response_parts.append(f"\n{i}. {resource.get('title', '未命名资源')}")
+                    response_parts.append(f"   类型：{resource.get('type', '未知')}")
+                    response_parts.append(f"   简介：{resource.get('description', '无简介')}")
+        
+        # 添加学习建议
+        response_parts.append(f"\n### 💡 学习建议")
+        response_parts.append(f"1. 先完成练习题，找出自己的知识薄弱点")
+        response_parts.append(f"2. 结合推荐的学习资源，针对性地巩固相关知识点")
+        response_parts.append(f"3. 定期复习，加深对知识点的理解和记忆")
+        
+        return "\n".join(response_parts)
+    
     async def on_channel_post(self, context: ChannelMessageContext):
         """处理频道消息"""
         try:
@@ -427,20 +585,55 @@ class ExerciseOptimizationAgent(WorkerAgent):
             if message_text.strip():
                 print(f"📝 解析后的用户输入: {message_text}")
                 
-                # 使用LLM生成响应
-                print(f"🤖 调用LLM生成响应...")
-                response = await self.run_agent(context, instruction=message_text, stream=False)
-                print(f"🤖 LLM原始响应: {response}")
-                
-                # 提取响应文本
-                response_text = ""
-                if hasattr(response, 'actions') and response.actions:
-                    last_action = response.actions[-1]
-                    if hasattr(last_action, 'payload') and isinstance(last_action.payload, dict):
-                        if 'response' in last_action.payload:
-                            response_text = last_action.payload['response']
-                        else:
-                            response_text = str(last_action.payload)
+                # 检查是否包含练习生成请求
+                if self._is_exercise_request(message_text):
+                    print(f"🎯 识别到练习生成请求: {message_text}")
+                    # 解析用户需求
+                    exercise_request = self._parse_exercise_request(message_text)
+                    print(f"📋 解析后的练习需求: {exercise_request}")
+                    
+                    # 与资源匹配代理协作
+                    print(f"🤝 发起代理协作...")
+                    
+                    # 1. 生成练习题
+                    exercises = await self.generate_exercises_from_request(exercise_request)
+                    print(f"📝 生成的练习题: {exercises}")
+                    
+                    # 2. 请求资源匹配代理提供相关学习资源
+                    ws = self.workspace()
+                    resource_request = {
+                        "subject": exercise_request["subject"],
+                        "knowledge_points": exercise_request["knowledge_points"],
+                        "learning_level": exercise_request["difficulty"],
+                        "request_type": "collaboration"
+                    }
+                    
+                    try:
+                        # 发送协作请求给资源匹配代理
+                        print(f"📤 发送协作请求给资源匹配代理")
+                        resource_response = await ws.agent("resource-matching-agent").send(resource_request)
+                        print(f"📥 收到资源匹配代理的响应: {resource_response}")
+                    except Exception as e:
+                        print(f"⚠️ 与资源匹配代理协作失败: {str(e)}")
+                        resource_response = None
+                    
+                    # 3. 整合响应
+                    response_text = self._build_integrated_response(exercises, resource_response, exercise_request)
+                else:
+                    # 使用LLM生成响应
+                    print(f"🤖 调用LLM生成响应...")
+                    response = await self.run_agent(context, instruction=message_text, stream=False)
+                    print(f"🤖 LLM原始响应: {response}")
+                    
+                    # 提取响应文本
+                    response_text = ""
+                    if hasattr(response, 'actions') and response.actions:
+                        last_action = response.actions[-1]
+                        if hasattr(last_action, 'payload') and isinstance(last_action.payload, dict):
+                            if 'response' in last_action.payload:
+                                response_text = last_action.payload['response']
+                            else:
+                                response_text = str(last_action.payload)
                 
                 if not response_text or response_text.strip() == "":
                     response_text = "抱歉，我暂时无法生成有效的响应，请稍后再试。"
@@ -462,15 +655,20 @@ class ExerciseOptimizationAgent(WorkerAgent):
     async def run_agent(self, context: EventContext, instruction: str, stream=False):
         """运行Agent，生成响应"""
         try:
-            # 格式化指令
+            # 格式化指令 - 专注于练习生成和解题技巧，避免与其他代理重复
             formatted_instruction = f"""
-            你是一个专业的练习优化助手，能够根据学习进度生成分层练习题。
+            你是一个专业的练习优化助手，专门负责生成练习题和提供解题技巧。
+            
+            你的职责：
+            1. 当用户询问学习方法、知识点等问题时，重点提供解题技巧和练习建议
+            2. 根据用户的学习需求，生成针对性的练习题
+            3. 提供解题思路和方法指导
+            4. 不要重复其他代理关于学习资源推荐的回答
             
             注意事项：
-            1. 只回答用户的具体问题，不要添加额外的解释或背景信息
-            2. 回答要简洁明了，不要包含与问题无关的技术细节
-            3. 如果用户的问题不明确，请礼貌地询问更多信息
-            4. 如果无法回答问题，请直接说明
+            - 回答要聚焦练习和解题，保持专业和实用
+            - 语言简洁明了，避免过于技术化的术语
+            - 如果用户问题不明确，请询问具体学习需求
             
             用户的问题：{instruction}
             你的回答：

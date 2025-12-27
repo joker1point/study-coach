@@ -3,6 +3,7 @@ openagents_env/
 env/
 venv/
 .env/
+.env
 
 # IDE文件
 .idea/

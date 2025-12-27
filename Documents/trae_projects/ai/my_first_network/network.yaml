@@ -32,8 +32,28 @@ network:
             description: "Automatically matched learning resources"
           - name: "exercises"
             description: "Generated exercises and practice"
+        
+        # File sharing settings
+        max_file_size: 52428800    # 50MB max file size
+        allowed_file_types: ["txt", "md", "pdf", "jpg", "png", "json", "yaml", "py"]
+        file_storage_path: "./network_files"
+        file_retention_days: 90    # Auto-delete old files
+        
+        # Message management
+        max_memory_messages: 1000   # Messages kept in memory
+        memory_cleanup_minutes: 60  # Cleanup interval
+        message_history_limit: 10000  # Total message history
         max_thread_depth: 10
+        
+        # Rate limiting
+        rate_limit_enabled: true
+        max_messages_per_minute: 60
+        max_files_per_hour: 10
+        
+        # Advanced features
         enable_message_routing: true
+        enable_message_search: true
+        enable_reactions: true
 
     # Shared cache for agent collaboration
     - name: "openagents.mods.core.shared_cache"
@@ -41,6 +61,29 @@ network:
       config:
         cache_ttl: 3600
         max_cache_size: 10000000
+    
+    # Forum for structured discussions
+    - name: "openagents.mods.workspace.forum"
+      enabled: true
+      config:
+        # Content limits
+        max_topics_per_agent: 200
+        max_comments_per_topic: 500
+        max_comment_depth: 10      # Nested comment levels
+        
+        # Features
+        enable_voting: true        # Allow upvoting/downvoting
+        enable_search: true        # Full-text search
+        enable_tagging: true       # Topic tags
+        enable_moderation: true    # Content moderation
+        
+        # Sorting and ranking
+        default_sort: "recent"     # recent, popular, trending
+        trending_window_hours: 24  # Time window for trending
+        
+        # Notifications
+        notify_on_reply: true
+        notify_on_mention: true
 
 
 
