@@ -1,263 +1,251 @@
-# 智能学习辅助系统
+# 智能学习助手网络 (Learning Assistant Network)
 
-## 系统简介
+一个基于OpenAgents框架构建的智能学习系统，通过多智能体协作提供个性化、高效的学习体验。
 
-智能学习辅助系统是一个基于本地大语言模型（Ollama）和多代理协作网络构建的智能教育辅助平台。该系统提供了丰富的学习分析、资源匹配、练习优化和学习指导功能，旨在帮助用户实现个性化、高效的学习体验。
+## 🌟 核心功能
 
-## 系统架构
+### 1. 多智能体协作系统
+- **学习助手智能体**: 协调复杂学习任务，管理智能体间的协作流程
+- **学习分析智能体**: 分析学习数据，识别知识缺口，提供个性化学习建议
+- **资源匹配智能体**: 根据学习需求和偏好匹配最优学习资源
+- **练习优化智能体**: 生成个性化练习，强化知识掌握
 
-### 核心组件
+### 2. 个性化学习路径
+- 基于学习风格、速度和表现动态生成学习路径
+- 考虑知识点之间的依赖关系，确保学习逻辑连贯性
+- 实时调整学习路径，适应学习进度和理解程度的变化
 
-1. **本地模型API服务**
-   - 基于FastAPI构建的Ollama模型接口服务
-   - 提供与OpenAI兼容的API接口
-   - 支持普通调用和流式响应
+### 3. 智能资源管理
+- 支持多种资源类型：视频、文档、练习、互动实验等
+- 基于学习表现趋势选择最合适的资源类型
+- 动态调整资源难度和呈现方式
 
-2. **智能学习网络**
-   - 多代理协作网络架构
-   - 支持HTTP和gRPC通信协议
-   - 内置消息传递和缓存机制
+### 4. 实时监控与可视化
+- 学习进度实时追踪和可视化展示
+- 表现趋势分析图表
+- 资源使用统计
+- 系统健康监控仪表盘
 
-3. **学习辅助代理**
-   - 学习分析代理：分析学习模式和进展
-   - 练习优化代理：生成和优化学习练习
-   - 资源匹配代理：匹配个性化学习资源
-   - 学习辅导代理：提供个性化学习指导
-   - 诊断代理：评估学习效果和知识掌握情况
+### 5. 任务管理与协作
+- 支持复杂任务的分解和分配
+- 任务依赖管理，确保正确的执行顺序
+- 智能体间的异步协作机制
 
-### 目录结构
+## 📦 项目结构
 
 ```
-ai/
-├── learning_assistant_network/   # 学习辅助网络主目录
-│   ├── agents/                   # 网络代理定义
-│   ├── mods/                     # 网络模块
-│   └── network.yaml              # 网络配置
-├── my_first_network/            # 示例网络
-│   ├── agents/                  # 自定义代理
-│   ├── llm_config.py            # LLM配置
-│   └── network.yaml             # 网络配置
-├── main.py                      # 本地模型API服务入口
-├── model_router.py              # 模型路由定义
-├── requirements.txt             # 依赖列表
-└── ...                          # 其他配置和文档文件
+my_first_network/
+├── agents/             # 智能体实现
+│   ├── learning_assistant_agent.py      # 学习助手智能体
+│   ├── learning_analysis_agent.py       # 学习分析智能体
+│   ├── resource_matching_agent.py       # 资源匹配智能体
+│   ├── exercise_optimization_agent.py   # 练习优化智能体
+│   └── ...                               # 其他智能体
+├── tools/              # 工具模块
+│   ├── task_manager.py         # 任务管理工具
+│   ├── visualization_tools.py  # 可视化工具
+│   ├── resource_tools.py       # 资源管理工具
+│   └── ...                     # 其他工具
+├── mods/               # 核心模块
+│   ├── openagents.mods.core.shared_cache/   # 共享缓存模块
+│   ├── openagents.mods.workspace.messaging/ # 消息系统模块
+│   └── ...                                   # 其他模块
+├── events/             # 事件定义
+├── network.yaml        # 网络配置
+├── demo_*.py           # 演示脚本
+├── sample_*.json       # 示例数据
+├── start_network.bat   # 网络启动脚本
+└── README.md           # 项目说明文档
 ```
 
-## 核心功能
-
-### 1. 本地模型服务
-
-- 提供基于Ollama的本地大语言模型服务
-- 兼容OpenAI API接口格式
-- 支持多模型切换（默认使用qwen:7b）
-- 提供实时健康检查功能
-
-### 2. 学习分析功能
-
-- 分析学习行为和模式
-- 识别学习优势和不足
-- 生成个性化学习报告
-- 提供学习建议和优化方向
-
-### 3. 资源匹配功能
-
-- 根据学习需求匹配相关资源
-- 支持多类型学习资源推荐
-- 实现资源智能分类和筛选
-- 提供资源质量评估
-
-### 4. 练习优化功能
-
-- 生成个性化练习题目
-- 根据学习进度调整难度
-- 提供即时反馈和解析
-- 实现练习效果跟踪
-
-### 5. 智能辅导功能
-
-- 提供个性化学习指导
-- 解答学习疑问
-- 辅助解决学习难题
-- 提供学习策略建议
-
-## 安装与部署
+## 🚀 快速开始
 
 ### 环境要求
+- Python 3.8+
+- pip包管理器
 
-- Python 3.10+
-- Ollama (本地大语言模型服务)
-- FastAPI
-- OpenAI Python SDK
-- Uvicorn
-
-### 安装步骤
+### 安装与启动
 
 1. **安装依赖**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-pip install -r requirements.txt
-```
+2. **启动网络**
+   ```bash
+   # Windows
+   start_network.bat
+   
+   # Linux/Mac
+   python -m openagents.network start
+   ```
 
-2. **启动Ollama服务**
+3. **运行演示**
+   ```bash
+   python demo_simple.py          # 基础功能演示
+   python demo_learning_path.py   # 学习路径生成演示
+   python demo_enhanced_features.py # 增强功能演示
+   ```
 
-确保Ollama服务已在本地启动并监听11434端口：
+## 🎯 核心智能体
 
-```bash
-ollama serve
-```
+### 学习助手智能体 (Learning Assistant Agent)
+作为系统的协调者，负责：
+- 接收和解析用户请求
+- 分解复杂任务为子任务
+- 分配任务给专业智能体
+- 整合和呈现最终结果
 
-3. **启动模型API服务**
+### 学习分析智能体 (Learning Analysis Agent)
+负责学习数据的深度分析：
+- 识别知识缺口和薄弱环节
+- 分析学习表现趋势
+- 计算学习风格和速度
+- 提供个性化学习建议
 
-```bash
-python main.py
-```
+### 资源匹配智能体 (Resource Matching Agent)
+智能匹配学习资源：
+- 基于学习需求选择资源类型
+- 考虑学习风格和偏好
+- 支持多种资源来源
+- 动态调整资源推荐
 
-服务将在 `http://localhost:8700` 启动，API文档可通过 `http://localhost:8700/docs` 访问。
+### 练习优化智能体 (Exercise Optimization Agent)
+生成个性化练习：
+- 根据知识掌握程度调整难度
+- 提供针对性的练习内容
+- 支持多种练习形式
+- 跟踪练习表现
 
-4. **启动智能学习网络**
+## 🛠️ 工具模块
 
-```bash
-cd my_first_network
-# 使用网络启动脚本
-```
+### 任务管理工具 (Task Manager)
+提供任务创建、分配和跟踪功能：
+- 支持任务优先级设置
+- 管理任务依赖关系
+- 实现任务重试机制
+- 提供任务状态监控
 
-## API接口
+### 可视化工具 (Visualization Tools)
+生成学习相关的可视化内容：
+- 学习路径图表
+- 表现趋势分析
+- 资源使用统计
+- 实时监控仪表盘
 
-### 模型服务接口
+## 📊 数据格式
 
-#### 1. 聊天接口
+系统使用JSON格式存储和交换数据：
 
-```
-POST /api/model/chat
-```
-
-**请求参数**：
-- `prompt`: 聊天提示词
-- `model`: 使用的模型（可选，默认qwen:7b）
-- `max_tokens`: 最大输出token数（可选，默认1024）
-- `temp`: 温度参数（可选，默认0.7）
-
-**响应示例**：
+### 学习数据示例
 ```json
 {
-  "choices": [
+  "student_id": "student_001",
+  "knowledge_points": [
     {
-      "message": {
-        "content": "这是模型的响应内容...",
-        "role": "assistant"
-      }
+      "id": "kp_001",
+      "name": "一元一次方程",
+      "mastery_level": 0.75,
+      "practice_count": 25,
+      "accuracy": 0.82
     }
-  ]
+  ],
+  "learning_style": "visual",
+  "learning_speed": "medium"
 }
 ```
 
-#### 2. 流式聊天接口
+## 🎨 可视化界面
 
-```
-POST /api/model/chat/stream
-```
+系统提供多种可视化界面：
+- `learning_path_visualization.html`: 学习路径可视化
+- `learning_progress_visualization.html`: 学习进度展示
+- `knowledge_map_visualization.html`: 知识图谱可视化
+- `index.html`: 主可视化仪表盘
 
-**请求参数**：同聊天接口
+## 📚 使用指南
 
-**响应**：流式文本响应
+### 1. 基本学习流程
+1. 用户提出学习需求
+2. 学习助手智能体接收并解析请求
+3. 分配任务给专业智能体
+4. 智能体协作完成任务
+5. 返回整合的学习建议和资源
 
-#### 3. 健康检查
-
-```
-GET /health
-```
-
-**响应示例**：
-```json
-{"status": "healthy"}
-```
-
-## 配置管理
-
-### LLM配置
-
-LLM配置文件位于 `my_first_network/llm_config.py`，可配置以下内容：
-
-- CloseAI API密钥
-- 模型选择
-- 代理设置
-- 其他LLM相关参数
-
-### 网络配置
-
-网络配置文件位于 `my_first_network/network.yaml`，可配置：
-
-- 网络名称和模式
-- 通信协议和端口
-- 模块启用状态
-- 消息通道设置
-
-## 使用示例
-
-### 1. 调用本地模型服务
-
+### 2. 个性化学习路径生成
 ```python
-import requests
+# 示例代码：生成个性化学习路径
+from agents.learning_analysis_agent import LearningAnalysisAgent
 
-# 调用聊天接口
-response = requests.post(
-    "http://localhost:8700/api/model/chat",
-    json={
-        "prompt": "请解释一下深度学习的基本原理",
-        "model": "qwen:7b",
-        "max_tokens": 512
-    }
+analysis_agent = LearningAnalysisAgent()
+learning_path = analysis_agent.generate_personalized_path(
+    learning_data=student_data,
+    target_knowledge_points=["kp_001", "kp_002"]
 )
-
-print(response.json()['choices'][0]['message']['content'])
 ```
 
-### 2. 启动学习辅助代理
+### 3. 资源匹配
+```python
+# 示例代码：匹配学习资源
+from agents.resource_matching_agent import ResourceMatchingAgent
 
-```bash
-# 启动学习辅助网络
-python -m openagents.network run my_first_network/network.yaml
+resource_agent = ResourceMatchingAgent()
+resources = resource_agent.match_resources(
+    topic="一元一次方程",
+    learning_style="visual",
+    knowledge_gaps=[{"id": "kp_001", "mastery_level": 0.6}]
+)
 ```
 
-## 故障排除
+## 🔧 配置说明
 
-### 常见问题
+### 网络配置 (network.yaml)
+- 设置网络名称、模式和节点ID
+- 配置HTTP/GRPC通信端口
+- 启用和配置核心模块
+- 设置消息系统参数
 
-1. **Ollama服务未启动**
-   - 错误信息：`Ollama服务未启动，请检查11434端口`
-   - 解决方法：确保Ollama服务已启动并监听11434端口
+### LLM配置 (llm_config.py)
+- 配置语言模型提供商
+- 设置API密钥和端点
+- 调整模型参数
 
-2. **模型加载失败**
-   - 错误信息：`模型加载失败`
-   - 解决方法：确认指定的模型已在Ollama中下载
+## 📈 性能优化
 
-3. **网络连接问题**
-   - 错误信息：`网络连接失败`
-   - 解决方法：检查网络配置和端口是否正确
+1. **异步处理**: 使用asyncio实现高效的并发任务处理
+2. **缓存机制**: 缓存频繁访问的学习数据和资源
+3. **任务优先级**: 基于优先级调度任务执行
+4. **资源池**: 管理智能体实例，避免频繁创建销毁
 
-## 相关文档
+## 🤝 贡献指南
 
-- [部署指南](DEPLOYMENT.md)
-- [服务器部署指南](DEPLOYMENT_TO_SERVER.md)
-- [健康检查故障排除](HEALTH_CHECK_FAILURE_TROUBLESHOOTING.md)
-- [内网连接故障排除](INTRANET_CONNECTION_TROUBLESHOOTING.md)
-- [Windows SCP使用指南](WINDOWS_SCP_GUIDE.md)
+我们欢迎社区贡献！请按照以下步骤：
 
-## 开发与扩展
+1. Fork 项目仓库
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开Pull Request
 
-### 开发新代理
+## 📄 许可证
 
-1. 在 `my_first_network/agents/` 目录下创建新的代理文件
-2. 定义代理类，继承自基础代理类
-3. 实现代理的核心功能方法
-4. 在网络配置中注册新代理
+本项目采用MIT许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-### 扩展模型服务
+## 📞 联系方式
 
-1. 修改 `model_router.py` 添加新的API接口
-2. 实现自定义模型调用逻辑
-3. 更新依赖和配置文件
+如有问题或建议，请通过以下方式联系：
+- 项目邮箱: learning-assistant-network@example.com
+- 问题反馈: [GitHub Issues](https://github.com/yourusername/learning-assistant-network/issues)
 
-## 许可证
+## 📋 更新日志
 
-[MIT License](LICENSE)
+### v1.0.0 (2025-12-29)
+- 初始版本发布
+- 实现核心智能体系统
+- 支持个性化学习路径生成
+- 提供基础可视化功能
+- 实现任务管理和协作机制
+
+---
+
+**智能学习助手网络** - 让学习更智能，更高效！ 🚀
